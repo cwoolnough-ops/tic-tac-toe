@@ -27,6 +27,7 @@ def show_location_names():
     print(board)
     # print("")
     print("___________________________")
+
 #prints the current state of the game board
 def current_board():
     print("current board:\n")
@@ -36,6 +37,7 @@ def current_board():
     print("    " + "---+---+---")
     print("    " + board_dict["7"] + "|" + board_dict["8"] + "|" + board_dict["9"])
     print("___________________________")
+
 # tests if any of the ending conditions for tic tac toe are met
 def is_game_over(board_dict):
     #values in each line are put into a set, if all values in a line are " x " the set length will be 1, representing a winning line
@@ -49,10 +51,13 @@ def is_game_over(board_dict):
     
     diagonal_1 = {board_dict["1"], board_dict["5"], board_dict["9"]}
     diagonal_2 = {board_dict["3"], board_dict["5"], board_dict["7"]}
+
     # loop through all lines checking if a line is winning
     for line in [diagonal_1, diagonal_2, horizontal_1, horizontal_2, horizontal_3, vertical_1, vertical_2, vertical_3]:
         if len(line) == 1 and "   " not in line: # ("   " not in line) removes the possibility of an empty line being a win
             return 1
+            
     if moves == 9: #if the win condition is not met and 9 moves are made(filled board), the game is a tie 
         return 2
+
     return 0 # value of 1 or 0 is used in game function to determine wether to keep asking for input
