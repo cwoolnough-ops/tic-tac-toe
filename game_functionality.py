@@ -128,6 +128,7 @@ class tic_tac_toe():
                 self.current_board[i] = [' X ', ' X ', ' X ']
                 self.draw_board()
                 return
+
             elif (self.current_board[i] == [' o ', ' o ', ' o ']):
                 self.current_board[i] = [' O ', ' O ', ' O ']
                 self.draw_board()
@@ -166,9 +167,9 @@ class tic_tac_toe():
         self.valid_options = ["c", "f"]
         #ensures correct input
         while self.two_player not in self.valid_options:
-            self.two_player = input("please enter a valid choice\nenter f for friend\nenter c for computer\n")
+            self.two_player = input("please enter a valid choice\nenter f to play a friend\nenter c to play the computer\n")
 
-        # game only ends if return statements are met
+        # game only ends if return statements are met in line 224/229 or playgame() is called in line 216
         while True:
             self.result = self.is_over()
             
@@ -176,7 +177,7 @@ class tic_tac_toe():
             if self.result == None:
                 self.draw_board()
 
-            #from here untill line " " are conditions to run if the game is finished
+            #from here untill line "229" are conditions to run if the game is finished
             elif self.result != None:
                 #for a tie game
                 if self.result == "   ":
@@ -199,32 +200,51 @@ class tic_tac_toe():
                     print("The winning line is capitalized\n")
 
                 #asks if the user wants to continue playing
-                play_again = input("Would you like to play again?\nEnter 1 for yes\nenter 2 for no\n")
+                play_again = input("Would you like to continue the tournament?\nEnter 1 for yes\nenter 2 for no\n")
 
                 #ensures user enters correct input
                 while play_again not in ["1", "2"]:
-                    play_again = input("Please enter a valid choice/nEnter 1 for yes\nenter 2 for no")
+                    play_again = input("Please enter a valid choice\nEnter 1 for to continue the tournament\nenter 2 to stop the tournament\n")
                 
                 # if the user wants to play again show the tournament score and start a new game
                 if play_again == "1":
-                    
                     self.clear_board()
                     
+                    #shows the current tournament score
                     print("\nThe Tournament score is:\nX wins: {}   O wins: {}   ties: {}\n".format(str(self.x_wins), str(self.o_wins), str(self.ties)))
-                    # self.current_player = " x "
+                    
+                    #starts a new game
                     self.play()
+
+                #shows final tournament score and exits to main menu
                 elif play_again == "2":
+                    
+                    #final score
                     print("\nThe final tournament score is:\nX wins: {}   O wins: {}   ties: {}\n".format(str(self.x_wins), str(self.o_wins), str(self.ties)))
+                    
                     return
+                
+                #second return statement here to fix bug where if game starts as a 2 player game then user chooses
+                #to face the computer it will not fully exit the game unless user choses to end the game twice
+                # this return is avoided if the user choses to play again by the self.play() call
                 return
+
             # two player game
             if self.two_player == "f":
+                #ensure game is not over
                 while self.is_over() == None:
+                    #tells what players turn it is
                     print("{} its your turn".format(self.current_player[1]))
+
+                    # gets the users move
                     x = input("input the x coordinate\n")
                     y = input("input the y coordinate\n")
+                    
+                    # checks for valid moves, makes the move if valid
                     if self.valid_move(x, y):
                         self.current_board[int(x)][int(y)] = self.current_player
+
+                        #after move is made change whos turn it is
                         if self.current_player == ' o ':
                             self.current_player = ' x '
                         else:
@@ -233,7 +253,7 @@ class tic_tac_toe():
                     else:
                         print("please enter valid coordinates")
                 
-            # checks if its the users turn in ai game
+            # checks if its the users turn in an ai game most of the functionality is described in 2 player game
             if self.current_player == ' x ' and self.two_player == "c" and self.is_over() == None:
                 while True:
                     print("x its your turn")
