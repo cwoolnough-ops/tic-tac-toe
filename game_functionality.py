@@ -1,4 +1,4 @@
-import PlayGame
+
 class tic_tac_toe():
     def __init__(self):
         self.initialize_game()
@@ -7,6 +7,9 @@ class tic_tac_toe():
         self.current_board = [['   ', '   ', '   '], ['   ', '   ', '   '], ['   ', '   ', '   ']]
 
         self.current_player = " x "
+        self.x_wins = 0
+        self.ties = 0
+        self.o_wins = 0
 
     #accesses board spaces by indexing and formats them into a game board, prints to console for user to see
     def draw_board(self):
@@ -148,8 +151,6 @@ class tic_tac_toe():
             self.current_board[2][2] = new_diag_1
             self.draw_board()
             return
-
-
         if self.current_board[0][2] != '   ' and self.current_board[0][2] == self.current_board[1][1] and self.current_board[1][1] == self.current_board[2][0]:
             new_diag_2 = self.current_board[0][2].upper()
             self.current_board[0][2] = new_diag_2
@@ -161,25 +162,65 @@ class tic_tac_toe():
     # runs the game
     def play(self):
         # asks if player wants to play a friend or the computer
-        self.two_player = input("would you like to play against a friend or the computer?\nenter f for friend\nenter c for computer\n")
+        self.two_player = input("\nWould you like to play against a friend or the computer?\nenter f for friend\nenter c for computer\n")
         self.valid_options = ["c", "f"]
+        #ensures correct input
         while self.two_player not in self.valid_options:
             self.two_player = input("please enter a valid choice\nenter f for friend\nenter c for computer\n")
 
+        # game only ends if return statements are met
         while True:
-            self.draw_board()
-
             self.result = self.is_over()
-
-            # prints out the result of the game
-            if self.result == "   ":
-                return print("the game is a tie")
-            elif self.result != None:
-                return self.highlight_winner(), print(self.result[1] + " won the game\nThe winning line is capitalized")
             
+            # if the game is still running print the game board
+            if self.result == None:
+                self.draw_board()
+
+            #from here untill line " " are conditions to run if the game is finished
+            elif self.result != None:
+                #for a tie game
+                if self.result == "   ":
+                    self.ties += 1
+                    self.draw_board()
+                    print("The game is a tie")
+
+                # for an O win
+                elif self.result == " o ":
+                    self.o_wins += 1
+                    self.highlight_winner()
+                    print("O wins the game\n")
+                    print("The winning line is capitalized\n")
+                
+                #for an X win
+                else:
+                    self.x_wins += 1
+                    self.highlight_winner()
+                    print("X wins the game\n")
+                    print("The winning line is capitalized\n")
+
+                #asks if the user wants to continue playing
+                play_again = input("Would you like to play again?\nEnter 1 for yes\nenter 2 for no\n")
+
+                #ensures user enters correct input
+                while play_again not in ["1", "2"]:
+                    play_again = input("Please enter a valid choice/nEnter 1 for yes\nenter 2 for no")
+                
+                # if the user wants to play again show the tournament score and start a new game
+                if play_again == "1":
+                    
+                    self.clear_board()
+                    
+                    print("\nThe Tournament score is:\nX wins: {}   O wins: {}   ties: {}\n".format(str(self.x_wins), str(self.o_wins), str(self.ties)))
+                    # self.current_player = " x "
+                    self.play()
+                elif play_again == "2":
+                    print("\nThe final tournament score is:\nX wins: {}   O wins: {}   ties: {}\n".format(str(self.x_wins), str(self.o_wins), str(self.ties)))
+                    return
+                return
             # two player game
             if self.two_player == "f":
                 while self.is_over() == None:
+                    print("{} its your turn".format(self.current_player[1]))
                     x = input("input the x coordinate\n")
                     y = input("input the y coordinate\n")
                     if self.valid_move(x, y):
@@ -192,9 +233,10 @@ class tic_tac_toe():
                     else:
                         print("please enter valid coordinates")
                 
-            # checks if its the users turn
+            # checks if its the users turn in ai game
             if self.current_player == ' x ' and self.two_player == "c" and self.is_over() == None:
                 while True:
+                    print("x its your turn")
                     x = input("input the x coordinate\n")
                     y = input("input the y coordinate\n")
                     if self.valid_move(x, y):
@@ -205,8 +247,14 @@ class tic_tac_toe():
                         print("please enter valid coordinates")
             
             # computers move 
-            if self.current_player == ' o ' and self.two_player == ' c ' and self.is_over() == None:
+            if self.current_player == ' o ' and self.two_player == 'c' and self.is_over() == None:
                 m, x, y = self.minimax() #runs the minimax algorithm
                 self.current_board[x][y] = ' o ' # makes the move the algorithm choses
                 self.current_player = ' x '
-
+    
+    #clears the board
+    def clear_board(self):
+        for i in range(3):
+            for j in range(3):
+                self.current_board[i][j] = '   '
+                self.current_player = ' x '
