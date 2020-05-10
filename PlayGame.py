@@ -1,5 +1,7 @@
 import game_functionality
-
+player_wins = 0
+player_ties = 0
+player_losses = 0
 choice = input("would you like to play tic tac toe?\nEnter 1 for yes\nEnter 2 to leave the game\n")
 playing = True
 while playing:
@@ -13,5 +15,5 @@ while playing:
         playing = False
 
     else:
-        choice = input("Please enter a valid choice:\n1 to play against a friend\n2 to play against the computer\n3 to leave the game\n")
+        choice = input("Please enter a valid choice:\nenter 1 to play again\nenter 2 to leave the game\n")
 print("Bye")

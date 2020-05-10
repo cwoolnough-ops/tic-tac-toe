@@ -1,3 +1,4 @@
+import PlayGame
 class tic_tac_toe():
     def __init__(self):
         self.initialize_game()
@@ -30,6 +31,7 @@ class tic_tac_toe():
         for i in range(0, 3):
             if (self.current_board[i] == [' x ', ' x ', ' x ']):
                 return ' x '
+
             elif (self.current_board[i] == [' o ', ' o ', ' o ']):
                 return ' o '
 
@@ -115,9 +117,50 @@ class tic_tac_toe():
                     self.current_board[i][j] = '   '
         return [min, x_value_2, y_value_2]
 
+    #prints out the winning board with the winning line capitilized
+    def highlight_winner(self):
+        #horizontal wins
+        for i in range(0, 3):
+            if (self.current_board[i] == [' x ', ' x ', ' x ']):
+                self.current_board[i] = [' X ', ' X ', ' X ']
+                self.draw_board()
+                return
+            elif (self.current_board[i] == [' o ', ' o ', ' o ']):
+                self.current_board[i] = [' O ', ' O ', ' O ']
+                self.draw_board()
+                return
+
+        # vertical wins
+        for i in range(0, 3):
+            if self.current_board[0][i] != '   ' and self.current_board[0][i] == self.current_board[1][i] and self.current_board[2][i] == self.current_board[0][i]:
+                new_vert = self.current_board[0][i].upper()
+                self.current_board[0][i] = new_vert 
+                self.current_board[1][i] = new_vert 
+                self.current_board[2][i] = new_vert
+                self.draw_board()
+                return
+
+        # diagonal wins
+        if self.current_board[0][0] != '   ' and self.current_board[0][0] == self.current_board[1][1] and self.current_board[1][1] == self.current_board[2][2]:
+            new_diag_1 = self.current_board[0][0].upper()
+            self.current_board[0][0] = new_diag_1
+            self.current_board[1][1] = new_diag_1
+            self.current_board[2][2] = new_diag_1
+            self.draw_board()
+            return
+
+
+        if self.current_board[0][2] != '   ' and self.current_board[0][2] == self.current_board[1][1] and self.current_board[1][1] == self.current_board[2][0]:
+            new_diag_2 = self.current_board[0][2].upper()
+            self.current_board[0][2] = new_diag_2
+            self.current_board[1][1] = new_diag_2
+            self.current_board[2][0] = new_diag_2
+            self.draw_board()
+            return
+
     # runs the game
     def play(self):
-        
+        # asks if player wants to play a friend or the computer
         self.two_player = input("would you like to play against a friend or the computer?\nenter f for friend\nenter c for computer\n")
         self.valid_options = ["c", "f"]
         while self.two_player not in self.valid_options:
@@ -132,8 +175,9 @@ class tic_tac_toe():
             if self.result == "   ":
                 return print("the game is a tie")
             elif self.result != None:
-                return print(self.result + " won the game")
-
+                return self.highlight_winner(), print(self.result[1] + " won the game\nThe winning line is capitalized")
+            
+            # two player game
             if self.two_player == "f":
                 while self.is_over() == None:
                     x = input("input the x coordinate\n")
@@ -149,7 +193,7 @@ class tic_tac_toe():
                         print("please enter valid coordinates")
                 
             # checks if its the users turn
-            if self.current_player == ' x ' and self.two_player == "c":
+            if self.current_player == ' x ' and self.two_player == "c" and self.is_over() == None:
                 while True:
                     x = input("input the x coordinate\n")
                     y = input("input the y coordinate\n")
@@ -160,9 +204,7 @@ class tic_tac_toe():
                     else:
                         print("please enter valid coordinates")
             
-            
-
-            # computers move
+            # computers move 
             if self.current_player == ' o ' and self.two_player == ' c ' and self.is_over() == None:
                 m, x, y = self.minimax() #runs the minimax algorithm
                 self.current_board[x][y] = ' o ' # makes the move the algorithm choses
